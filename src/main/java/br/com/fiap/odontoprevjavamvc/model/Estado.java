@@ -17,4 +17,11 @@ public class Estado {
     @Column(name = "SIGLA_ESTADO")
     private String sigla;
 
+    public Estado(String nome, String sigla) {
+        this.nome = nome;
+        this.sigla = sigla;
+    }
+
+    public Estado() {
+    }
 }
