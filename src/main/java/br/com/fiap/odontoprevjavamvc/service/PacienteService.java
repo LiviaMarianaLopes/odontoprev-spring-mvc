@@ -1,6 +1,6 @@
 package br.com.fiap.odontoprevjavamvc.service;
 
-import br.com.fiap.odontoprevjavamvc.dto.PacienteRequest;
+import br.com.fiap.odontoprevjavamvc.dto.*;
 import br.com.fiap.odontoprevjavamvc.model.*;
 import br.com.fiap.odontoprevjavamvc.repository.*;
 import jakarta.validation.Valid;
@@ -77,8 +77,27 @@ public class PacienteService {
 
     @Transactional
     public Paciente cadastrarPaciente(@Valid PacienteRequest pacienteRequest) {
+        Paciente paciente = requestToPaciente(pacienteRequest);
+        return pacienteRepository.save(paciente);
+    }
 
-        // Verifica se o login já existe pelo e-mail
+    @Transactional
+    public void atualizarPaciente(Long id, @Valid PacienteRequest pacienteRequest) {
+        Optional<Paciente> pacienteOptional = pacienteRepository.findById(id);
+
+        if (pacienteOptional.isPresent()) {
+            Paciente pacienteAtualizado = requestToPaciente(pacienteRequest);
+            pacienteAtualizado.setId(id);
+            pacienteRepository.save(pacienteAtualizado);
+        }
+    }
+
+    public void deletarPaciente(Long id) {
+        pacienteRepository.deleteById(id);
+    }
+
+    private Paciente requestToPaciente(PacienteRequest pacienteRequest) {
+        // Verifica ou cria login
         Optional<Login> loginExistente = loginRepository.findByEmail(pacienteRequest.getEmail());
         Login login = loginExistente.orElseGet(() -> {
             Login novoLogin = new Login();
@@ -109,10 +128,12 @@ public class PacienteService {
                     return bairroRepository.save(novoBairro);
                 });
 
-        Optional<Endereco> enderecoExistente = enderecoRepository.findByLogradouroAndNumeroAndCepAndBairro(
+        // Verifica ou cria endereço
+        Optional<Endereco> enderecoExistente = enderecoRepository.findByLogradouroAndNumeroAndCepAndComplementoAndBairro(
                 pacienteRequest.getEndereco().getLogradouro(),
                 pacienteRequest.getEndereco().getNumero(),
                 pacienteRequest.getEndereco().getCep(),
+                pacienteRequest.getEndereco().getComplemento(),
                 bairro
         );
 
@@ -121,10 +142,12 @@ public class PacienteService {
             novoEndereco.setLogradouro(pacienteRequest.getEndereco().getLogradouro());
             novoEndereco.setNumero(pacienteRequest.getEndereco().getNumero());
             novoEndereco.setCep(pacienteRequest.getEndereco().getCep());
+            novoEndereco.setComplemento(pacienteRequest.getEndereco().getComplemento());
             novoEndereco.setBairro(bairro);
             return enderecoRepository.save(novoEndereco);
         });
 
+        // Verifica ou cria gênero
         Genero genero = generoRepository.findByTitulo(pacienteRequest.getGenero().getTitulo())
                 .orElseGet(() -> {
                     Genero novoGenero = new Genero();
@@ -132,11 +155,11 @@ public class PacienteService {
                     return generoRepository.save(novoGenero);
                 });
 
-        // Cria o paciente
         Paciente paciente = new Paciente();
         paciente.setNome(pacienteRequest.getNome());
         paciente.setDataNascimento(pacienteRequest.getDataNascimento());
         paciente.setEmail(pacienteRequest.getEmail());
+
         try {
             paciente.setTelefone(Long.parseLong(pacienteRequest.getTelefone()));
             paciente.setCpf(Long.parseLong(pacienteRequest.getCpf()));
@@ -148,6 +171,46 @@ public class PacienteService {
         paciente.setEndereco(endereco);
         paciente.setGenero(genero);
 
-        return pacienteRepository.save(paciente);
+        return paciente;
     }
+
+    public PacienteRequest pacienteToRequest(Paciente paciente) {
+        PacienteRequest request = new PacienteRequest();
+        request.setNome(paciente.getNome());
+        request.setEmail(paciente.getEmail());
+        request.setDataNascimento(paciente.getDataNascimento());
+        request.setTelefone(String.valueOf(paciente.getTelefone()));
+        request.setCpf(String.valueOf(paciente.getCpf()));
+
+        // Passando o Login para LoginRequest
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail(paciente.getEmail());
+        loginRequest.setSenha(paciente.getLogin().getSenha());
+        request.setLogin(loginRequest);
+
+        // Passando o endereço para endereço request
+        EstadoRequest estadoRequest = new EstadoRequest();
+        estadoRequest.setNome(paciente.getEndereco().getBairro().getCidade().getEstado().getNome());
+        estadoRequest.setSigla(paciente.getEndereco().getBairro().getCidade().getEstado().getSigla());
+        CidadeRequest cidadeRequest = new CidadeRequest();
+        cidadeRequest.setNome(paciente.getEndereco().getBairro().getCidade().getNome());
+        cidadeRequest.setEstado(estadoRequest);
+        BairroRequest bairroRequest = new BairroRequest();
+        bairroRequest.setNome(paciente.getEndereco().getBairro().getNome());
+        bairroRequest.setCidade(cidadeRequest);
+        EnderecoRequest enderecoRequest = new EnderecoRequest();
+        enderecoRequest.setLogradouro(paciente.getEndereco().getLogradouro());
+        enderecoRequest.setNumero(paciente.getEndereco().getNumero());
+        enderecoRequest.setCep(paciente.getEndereco().getCep());
+        enderecoRequest.setComplemento(paciente.getEndereco().getComplemento());
+        enderecoRequest.setBairro(bairroRequest);
+        request.setEndereco(enderecoRequest);
+
+        // Passando o genero para genero request
+        GeneroRequest generoRequest = new GeneroRequest();
+        generoRequest.setTitulo(paciente.getGenero().getTitulo());
+        request.setGenero(generoRequest);
+        return request;
+    }
+
 }
