@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:replace="~{fragments/header.html :: header}"></div>
+
+    <div>
+        <form method="post" th:action="@{/paciente/editar/{id}(id=${idPaciente})}" th:object="${paciente}">
+            <h2>Edição de paciente</h2>
+            <input type="hidden" th:field="${idPaciente}">
+            <br>
+            <table>
+                <tr><td>Nome:</td><td><input type="text" th:field="*{nome}" required></td></tr>
+                <tr><td>Data de Nascimento:</td><td><input type="date" th:field="*{dataNascimento}" required></td></tr>
+                <tr>
+                    <td>Email:</td>
+                    <td>
+                        <input type="email" th:field="*{email}" required oninput="document.getElementById('loginEmail').value = this.value">
+                        <input type="hidden" th:field="*{login.email}" id="loginEmail">
+                    </td>
+                </tr>
+                <tr><td>Telefone:</td><td><input type="text" th:field="*{telefone}" required></td></tr>
+                <tr><td>CPF:</td><td><input type="text" th:field="*{cpf}" required></td></tr>
+                <tr><td>Senha:</td><td><input type="password" th:field="*{login.senha}" required></td></tr>
+                <tr>
+                    <td>Gênero:</td>
+                    <td>
+                        <select name="genero" th:field="*{genero.titulo}">
+                            <option name="Feminino" value="Feminino">Feminino</option>
+                            <option name="Masculino" value="Masculino">Masculino</option>
+                        </select>
+                    </td>
+                </tr>
+
+                <!-- Campos do Endereço -->
+                <tr><td>Logradouro:</td><td><input type="text" th:field="*{endereco.logradouro}" required></td></tr>
+                <tr><td>Número:</td><td><input type="text" th:field="*{endereco.numero}" required></td></tr>
+                <tr><td>CEP:</td><td><input type="text" th:field="*{endereco.cep}" required></td></tr>
+                <tr><td>Complemento:</td><td><input type="text" th:field="*{endereco.complemento}"></td></tr>
+
+                <!-- Campos do Bairro, Cidade, Estado e País -->
+                <tr><td>Bairro:</td><td><input type="text" th:field="*{endereco.bairro.nome}" required></td></tr>
+                <tr><td>Cidade:</td><td><input type="text" th:field="*{endereco.bairro.cidade.nome}" required></td></tr>
+                <tr>
+                    <td>Estado:</td>
+                    <td>
+                        <select id="siglaEstado" th:field="*{endereco.bairro.cidade.estado.sigla}">
+                            <option value="">Selecione</option>
+                            <option value="AC">AC</option>
+                            <option value="AL">AL</option>
+                            <option value="AP">AP</option>
+                            <option value="AM">AM</option>
+                            <option value="BA">BA</option>
+                            <option value="CE">CE</option>
+                            <option value="DF">DF</option>
+                            <option value="ES">ES</option>
+                            <option value="GO">GO</option>
+                            <option value="MA">MA</option>
+                            <option value="MT">MT</option>
+                            <option value="MS">MS</option>
+                            <option value="MG">MG</option>
+                            <option value="PA">PA</option>
+                            <option value="PB">PB</option>
+                            <option value="PR">PR</option>
+                            <option value="PE">PE</option>
+                            <option value="PI">PI</option>
+                            <option value="RJ">RJ</option>
+                            <option value="RN">RN</option>
+                            <option value="RS">RS</option>
+                            <option value="RO">RO</option>
+                            <option value="RR">RR</option>
+                            <option value="SC">SC</option>
+                            <option value="SP">SP</option>
+                            <option value="SE">SE</option>
+                            <option value="TO">TO</option>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr><td colspan="2"><input type="submit" value="Atualizar"></td></tr>
+            </table>
+        </form>
+    </div>
+    <div th:if="${errors}">
+        <ul>
+            <li th:each="error : ${errors}" th:text="${error.defaultMessage}" style="color: red;"></li>
+        </ul>
+    </div>
+<div th:replace="~{fragments/footer.html :: footer}"></div>
+
+</body>
+</html>
