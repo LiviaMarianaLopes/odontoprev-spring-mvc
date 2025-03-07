@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface EnderecoRepository extends JpaRepository<Endereco, Long> {
-    Optional<Endereco> findByLogradouroAndNumeroAndCepAndBairro(
-            String logradouro, int numero, int cep, Bairro bairro
+    Optional<Endereco> findByLogradouroAndNumeroAndCepAndComplementoAndBairro(
+            String logradouro, int numero, int cep, String complemento, Bairro bairro
     );
 }
