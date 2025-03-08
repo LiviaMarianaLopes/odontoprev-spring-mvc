@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div th:replace="~{fragments/header.html :: header}"></div>
+
+<div>
+  <h2>Lista de dentistas cadastrados</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nome</th>
+      <th>CRO</th>
+      <th>Data de nascimento</th>
+      <th>Email</th>
+      <th>CPF</th>
+      <th>Telefone</th>
+      <th>Gênero</th>
+      <th>Endereço</th>
+      <th>Login</th>
+      <th>Suspeito</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="dentista : ${listaDentistas}">
+      <td th:text="${dentista.id}">ID</td>
+      <td th:text="${dentista.nome}">Nome</td>
+      <td th:text="${dentista.cro}">CRO</td>
+      <td th:text="${dentista.dataNascimento}">Data de nascimento</td>
+      <td th:text="${dentista.email}">Email</td>
+      <td th:text="${dentista.cpf}">CPF</td>
+      <td th:text="${dentista.telefone}">Telefone</td>
+      <td th:text="${dentista.genero.titulo}">Genero</td>
+      <td>
+        <table>
+          <thead>
+          <tr>
+            <th>Logradouro</th>
+            <th>CEP</th>
+            <th>Número</th>
+            <th>Complemento</th>
+            <th>Bairro</th>
+            <th>Cidade</th>
+            <th>Estado</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td th:text="${dentista.endereco.logradouro}"></td>
+            <td th:text="${dentista.endereco.cep}"></td>
+            <td th:text="${dentista.endereco.numero}"></td>
+            <td th:text="${dentista.endereco.complemento}"></td>
+            <td th:text="${dentista.endereco.bairro.nome}"></td>
+            <td th:text="${dentista.endereco.bairro.cidade.nome}"></td>
+            <td th:text="${dentista.endereco.bairro.cidade.estado.nome}"></td>
+          </tr>
+          </tbody>
+        </table>
+      </td>
+      <td>
+        <table>
+          <thead>
+          <tr>
+            <th>Email</th>
+            <th>Senha</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td th:text="${dentista.login.email}"></td>
+            <td th:text="${dentista.login.senha}"></td>
+          </tr>
+          </tbody>
+        </table>
+      </td>
+      <td th:text="${dentista.suspeito}">Suspeito</td>
+      <td>
+        <a th:href="@{/dentista/edicao/{id}(id = ${dentista.id})}">Editar</a>
+        <span> | </span>
+        <a th:href="@{/dentista/deletar/{id}(id = ${dentista.id})}">Deletar</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div th:replace="~{fragments/footer.html :: footer}"></div>
+
+</body>
+</html>
