@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface LoginRepository extends JpaRepository<Login, Long> {
     Optional<Login> findByEmail(String email);
-
+    void deleteByEmail(String email);
 }

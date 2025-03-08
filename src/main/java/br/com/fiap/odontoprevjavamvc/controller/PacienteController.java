@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -34,6 +35,10 @@ public class PacienteController {
     public ModelAndView cadastrarPaciente(@Valid @ModelAttribute("Paciente") PacienteRequest pacienteRequest, BindingResult result) {
         ModelAndView modelAndView = new ModelAndView();
 
+        if (pacienteService.isEmailCadastrado(pacienteRequest.getEmail())) {
+            result.rejectValue("email", "email.cadastrado", "Este e-mail já está cadastrado.");
+        }
+
         if (result.hasErrors()) {
             modelAndView.setViewName("pacienteCadastro"); // Retorna a página com erros
             modelAndView.addObject("paciente",new Paciente());
@@ -55,23 +60,22 @@ public class PacienteController {
         ModelAndView mv = new ModelAndView("pacienteEdicao");
         mv.addObject("idPaciente", id);
         mv.addObject("paciente", pacienteService.pacienteToRequest(paciente));
-        System.out.println(pacienteService.pacienteToRequest(paciente));
         return mv;
     }
     @PostMapping("/editar/{id}")
-    public ModelAndView editarPaciente(@PathVariable Long id, @Valid @ModelAttribute PacienteRequest pacienteRequest, BindingResult result){
-        ModelAndView modelAndView = new ModelAndView();
+    public String editarPaciente(@PathVariable Long id, @Valid @ModelAttribute PacienteRequest pacienteRequest, BindingResult result, RedirectAttributes redirectAttributes) {
+
+        if (pacienteService.isEmailUtilizado(pacienteRequest, id)) {
+            result.rejectValue("email", "email.cadastrado", "Este e-mail já está cadastrado.");
+        }
 
         if (result.hasErrors()) {
-            modelAndView.setViewName("pacienteCadastro"); // Retorna a página com erros
-            modelAndView.addObject("paciente",new Paciente());
-            modelAndView.addObject("errors",result.getAllErrors());
-            return modelAndView;
+            redirectAttributes.addFlashAttribute("errors", result.getAllErrors());
+            return "redirect:/paciente/edicao/" + id;
         }
         pacienteService.atualizarPaciente(id, pacienteRequest);
-        modelAndView.setViewName("redirect:/paciente/lista"); // Redireciona para a página de sucesso
+        return "redirect:/paciente/lista";
 
-        return modelAndView;
     }
 
     @GetMapping("/deletar/{id}")

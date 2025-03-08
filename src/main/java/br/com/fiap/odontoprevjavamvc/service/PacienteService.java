@@ -92,19 +92,33 @@ public class PacienteService {
         }
     }
 
+    @Transactional
     public void deletarPaciente(Long id) {
-        pacienteRepository.deleteById(id);
+        Paciente paciente = pacienteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Paciente não encontrado"));
+        loginRepository.deleteByEmail(paciente.getEmail());
+        pacienteRepository.delete(paciente);
     }
 
     private Paciente requestToPaciente(PacienteRequest pacienteRequest) {
-        // Verifica ou cria login
         Optional<Login> loginExistente = loginRepository.findByEmail(pacienteRequest.getEmail());
-        Login login = loginExistente.orElseGet(() -> {
-            Login novoLogin = new Login();
-            novoLogin.setEmail(pacienteRequest.getEmail());
-            novoLogin.setSenha(pacienteRequest.getLogin().getSenha());
-            return loginRepository.save(novoLogin);
-        });
+
+        Login login;
+        if (loginExistente.isPresent()) {
+            // Atualiza a senha caso necessário
+            login = loginExistente.get();
+            String novaSenha = pacienteRequest.getLogin().getSenha();
+
+            if (!login.getSenha().equals(novaSenha)) {
+                login.setSenha(novaSenha);
+                loginRepository.save(login);
+            }
+        } else {
+            login = new Login();
+            login.setEmail(pacienteRequest.getEmail());
+            login.setSenha(pacienteRequest.getLogin().getSenha());
+            login = loginRepository.save(login);
+        }
 
         String siglaEstado = pacienteRequest.getEndereco().getBairro().getCidade().getEstado().getSigla();
         String nomeEstado = SIGLAS_ESTADOS.getOrDefault(siglaEstado, "Estado Desconhecido");
@@ -211,6 +225,21 @@ public class PacienteService {
         generoRequest.setTitulo(paciente.getGenero().getTitulo());
         request.setGenero(generoRequest);
         return request;
+    }
+
+    public Boolean isEmailCadastrado(String email) {
+        Optional<Login> loginExistente = loginRepository.findByEmail(email);
+
+        if (loginExistente.isPresent()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isEmailUtilizado(PacienteRequest pacienteRequest, Long id) {
+        // Verifica se o e-mail existe no banco de dados e se não pertence ao paciente atual
+        Optional<Paciente> paciente = pacienteRepository.findByEmail(pacienteRequest.getEmail());
+        return paciente.isPresent() && !paciente.get().getId().equals(id);
     }
 
 }
