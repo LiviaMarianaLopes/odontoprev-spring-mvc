@@ -84,7 +84,13 @@ public class DentistaService {
     @Transactional
     public void atualizarDentista(Long id, @Valid DentistaRequest dentistaRequest) {
         Optional<Dentista> dentistaOptional = dentistaRepository.findById(id);
-
+        Optional<Login> loginOptional = loginRepository.findById(dentistaOptional.get().getLogin().getId());
+        if (loginOptional.isPresent()) {
+            Login login = loginOptional.get();
+            login.setEmail(dentistaRequest.getEmail());
+            login.setSenha(dentistaRequest.getLogin().getSenha());
+            loginRepository.save(login);
+        }
         if (dentistaOptional.isPresent()) {
             Dentista dentistaAtualizado = requestToDentista(dentistaRequest);
             dentistaAtualizado.setId(id);
@@ -101,24 +107,8 @@ public class DentistaService {
     }
 
     private Dentista requestToDentista(DentistaRequest dentistaRequest) {
-        Optional<Login> loginExistente = loginRepository.findByEmail(dentistaRequest.getEmail());
-
-        Login login;
-        if (loginExistente.isPresent()) {
-            // Atualiza a senha caso necessário
-            login = loginExistente.get();
-            String novaSenha = dentistaRequest.getLogin().getSenha();
-
-            if (!login.getSenha().equals(novaSenha)) {
-                login.setSenha(novaSenha);
-                loginRepository.save(login);
-            }
-        } else {
-            login = new Login();
-            login.setEmail(dentistaRequest.getEmail());
-            login.setSenha(dentistaRequest.getLogin().getSenha());
-            login = loginRepository.save(login);
-        }
+        Login login = loginRepository.findByEmail(dentistaRequest.getEmail())
+                .orElseGet(() -> loginRepository.save(new Login(dentistaRequest.getLogin().getEmail(), dentistaRequest.getLogin().getSenha())));
 
         String siglaEstado = dentistaRequest.getEndereco().getBairro().getCidade().getEstado().getSigla();
         String nomeEstado = SIGLAS_ESTADOS.getOrDefault(siglaEstado, "Estado Desconhecido");

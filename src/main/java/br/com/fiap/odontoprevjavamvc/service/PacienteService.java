@@ -84,7 +84,14 @@ public class PacienteService {
     @Transactional
     public void atualizarPaciente(Long id, @Valid PacienteRequest pacienteRequest) {
         Optional<Paciente> pacienteOptional = pacienteRepository.findById(id);
-
+        // atualiazar login
+        Optional<Login> loginOptional = loginRepository.findById(pacienteOptional.get().getLogin().getId());
+        if (loginOptional.isPresent()) {
+            Login login = loginOptional.get();
+            login.setEmail(pacienteRequest.getEmail());
+            login.setSenha(pacienteRequest.getLogin().getSenha());
+            loginRepository.save(login);
+        }
         if (pacienteOptional.isPresent()) {
             Paciente pacienteAtualizado = requestToPaciente(pacienteRequest);
             pacienteAtualizado.setId(id);
@@ -101,24 +108,8 @@ public class PacienteService {
     }
 
     private Paciente requestToPaciente(PacienteRequest pacienteRequest) {
-        Optional<Login> loginExistente = loginRepository.findByEmail(pacienteRequest.getEmail());
-
-        Login login;
-        if (loginExistente.isPresent()) {
-            // Atualiza a senha caso necessário
-            login = loginExistente.get();
-            String novaSenha = pacienteRequest.getLogin().getSenha();
-
-            if (!login.getSenha().equals(novaSenha)) {
-                login.setSenha(novaSenha);
-                loginRepository.save(login);
-            }
-        } else {
-            login = new Login();
-            login.setEmail(pacienteRequest.getEmail());
-            login.setSenha(pacienteRequest.getLogin().getSenha());
-            login = loginRepository.save(login);
-        }
+        Login login = loginRepository.findByEmail(pacienteRequest.getEmail())
+                .orElseGet(() -> loginRepository.save(new Login(pacienteRequest.getLogin().getEmail(), pacienteRequest.getLogin().getSenha())));
 
         String siglaEstado = pacienteRequest.getEndereco().getBairro().getCidade().getEstado().getSigla();
         String nomeEstado = SIGLAS_ESTADOS.getOrDefault(siglaEstado, "Estado Desconhecido");
