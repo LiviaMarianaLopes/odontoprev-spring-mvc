@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" rel="stylesheet"/>
+    <script th:href="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}" defer></script>
+    <link th:href="@{/css/style.css}" rel="stylesheet"/>
+</head>
+<body>
+<div th:replace="~{fragments/header.html :: header}"></div>
+<div class="main_content">
+
+    <h2>Bem-vindo ao Sistema de Gerenciamento de Pacientes e Dentistas</h2>
+    <p class="font-size-large">Este sistema permite a gestão eficiente de pacientes e dentistas para a Odontoprev, com
+        funcionalidades de cadastro, consulta, edição e exclusão de dados.</p>
+    <h2>Como Funciona o Sistema?</h2>
+    <p class="font-size-large">O sistema é projetado para facilitar a interação entre pacientes, dentistas e a
+        administração da Odontoprev. Com uma interface simples, você pode gerenciar dados e garantir a segurança dos
+        processos.</p>
+</div>
+
+<div th:replace="~{fragments/footer.html :: footer}"></div>
+</body>
+</html>
