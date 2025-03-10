@@ -2,98 +2,125 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Cadastro de Dentista</title>
+    <link th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" rel="stylesheet"/>
+    <script th:href="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}" defer></script>
+    <link th:href="@{/css/style.css}" rel="stylesheet"/>
 </head>
 <body>
 <div th:replace="~{fragments/header.html :: header}"></div>
 
-<div>
-    <form method="post" th:action="@{/dentista/cadastrar}" th:object="${dentista}">
-        <h2>Cadastro de Dentista</h2>
-        <br>
-        <table>
-            <tr><td>Nome:</td><td><input type="text" th:field="*{nome}" required></td></tr>
-            <tr><td>CRO</td><td><input type="text" th:field="*{cro}" required></td></tr>
-            <tr><td>Data de Nascimento:</td><td><input type="date" th:field="*{dataNascimento}" required></td></tr>
-            <tr>
-                <td>Email:</td>
-                <td>
-                    <input type="email" th:field="*{email}" required oninput="document.getElementById('loginEmail').value = this.value">
-                    <input type="hidden" th:field="*{login.email}" id="loginEmail">
-                </td>
-            </tr>
-            <tr><td>Telefone:</td><td><input type="text" th:field="*{telefone}" required></td></tr>
-            <tr><td>CPF:</td><td><input type="text" th:field="*{cpf}" required></td></tr>
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Cadastro de Dentista</h2>
 
-            <!-- Campo para senha (Login) -->
-            <tr><td>Senha:</td><td><input type="password" th:field="*{login.senha}" required></td></tr>
+    <form method="post" th:action="@{/dentista/cadastrar}" th:object="${dentista}" class="row g-3">
+        <div class="col-md-6">
+            <label for="nome" class="form-label">Nome:</label>
+            <input type="text" class="form-control" id="nome" th:field="*{nome}" required>
+        </div>
 
-            <!-- Campo de seleção de Gênero -->
-            <tr>
-                <td>Gênero:</td>
-                <td>
-                    <select name="genero" th:field="*{genero.titulo}">
-                        <option name="Feminino" value="Feminino">Feminino</option>
-                        <option name="Masculino" value="Masculino">Masculino</option>
-                    </select>
-                </td>
-            </tr>
+        <div class="col-md-6">
+            <label for="cro" class="form-label">CRO:</label>
+            <input type="text" class="form-control" id="cro" th:field="*{cro}" required>
+        </div>
 
-            <!-- Campos do Endereço -->
-            <tr><td>Logradouro:</td><td><input type="text" th:field="*{endereco.logradouro}" required></td></tr>
-            <tr><td>Número:</td><td><input type="text" th:field="*{endereco.numero}" required></td></tr>
-            <tr><td>CEP:</td><td><input type="text" th:field="*{endereco.cep}" required></td></tr>
-            <tr><td>Complemento:</td><td><input type="text" th:field="*{endereco.complemento}"></td></tr>
+        <div class="col-md-4">
+            <label for="dataNascimento" class="form-label">Data de Nascimento:</label>
+            <input type="date" class="form-control" id="dataNascimento" th:field="*{dataNascimento}" required>
+        </div>
 
-            <!-- Campos do Bairro, Cidade, Estado e País -->
-            <tr><td>Bairro:</td><td><input type="text" th:field="*{endereco.bairro.nome}" required></td></tr>
-            <tr><td>Cidade:</td><td><input type="text" th:field="*{endereco.bairro.cidade.nome}" required></td></tr>
-            <tr>
-                <td>Estado:</td>
-                <td>
-                    <select id="siglaEstado" th:field="*{endereco.bairro.cidade.estado.sigla}">
-                        <option value="">Selecione</option>
-                        <option value="AC">AC</option>
-                        <option value="AL">AL</option>
-                        <option value="AP">AP</option>
-                        <option value="AM">AM</option>
-                        <option value="BA">BA</option>
-                        <option value="CE">CE</option>
-                        <option value="DF">DF</option>
-                        <option value="ES">ES</option>
-                        <option value="GO">GO</option>
-                        <option value="MA">MA</option>
-                        <option value="MT">MT</option>
-                        <option value="MS">MS</option>
-                        <option value="MG">MG</option>
-                        <option value="PA">PA</option>
-                        <option value="PB">PB</option>
-                        <option value="PR">PR</option>
-                        <option value="PE">PE</option>
-                        <option value="PI">PI</option>
-                        <option value="RJ">RJ</option>
-                        <option value="RN">RN</option>
-                        <option value="RS">RS</option>
-                        <option value="RO">RO</option>
-                        <option value="RR">RR</option>
-                        <option value="SC">SC</option>
-                        <option value="SP">SP</option>
-                        <option value="SE">SE</option>
-                        <option value="TO">TO</option>
-                    </select>
-                </td>
-            </tr>
+        <div class="col-md-8">
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" class="form-control" id="email" th:field="*{email}" required
+                   oninput="document.getElementById('loginEmail').value = this.value">
+            <input type="hidden" th:field="*{login.email}" id="loginEmail">
+        </div>
 
-            <tr><td colspan="2"><input type="submit" value="Cadastrar"></td></tr>
-        </table>
+        <div class="col-md-6">
+            <label for="telefone" class="form-label">Telefone:</label>
+            <input type="text" class="form-control" id="telefone" th:field="*{telefone}" required>
+        </div>
+
+        <div class="col-md-6">
+            <label for="cpf" class="form-label">CPF:</label>
+            <input type="text" class="form-control" id="cpf" th:field="*{cpf}" required>
+        </div>
+
+        <div class="col-md-6">
+            <label for="senha" class="form-label">Senha:</label>
+            <input type="password" class="form-control" id="senha" th:field="*{login.senha}" required>
+        </div>
+
+        <div class="col-md-6">
+            <label for="genero" class="form-label">Gênero:</label>
+            <select class="form-select" id="genero" th:field="*{genero.titulo}">
+                <option value="Feminino">Feminino</option>
+                <option value="Masculino">Masculino</option>
+            </select>
+        </div>
+
+        <hr class="mt-4">
+
+        <h4 class="text-center">Endereço</h4>
+
+        <div class="col-md-6">
+            <label for="logradouro" class="form-label">Logradouro:</label>
+            <input type="text" class="form-control" id="logradouro" th:field="*{endereco.logradouro}" required>
+        </div>
+
+        <div class="col-md-3">
+            <label for="numero" class="form-label">Número:</label>
+            <input type="text" class="form-control" id="numero" th:field="*{endereco.numero}" required>
+        </div>
+
+        <div class="col-md-3">
+            <label for="cep" class="form-label">CEP:</label>
+            <input type="text" class="form-control" id="cep" th:field="*{endereco.cep}" required>
+        </div>
+
+        <div class="col-md-6">
+            <label for="complemento" class="form-label">Complemento:</label>
+            <input type="text" class="form-control" id="complemento" th:field="*{endereco.complemento}">
+        </div>
+
+        <div class="col-md-6">
+            <label for="bairro" class="form-label">Bairro:</label>
+            <input type="text" class="form-control" id="bairro" th:field="*{endereco.bairro.nome}" required>
+        </div>
+
+        <div class="col-md-6">
+            <label for="cidade" class="form-label">Cidade:</label>
+            <input type="text" class="form-control" id="cidade" th:field="*{endereco.bairro.cidade.nome}" required>
+        </div>
+
+        <div class="col-md-6">
+            <label for="estado" class="form-label">Estado:</label>
+            <select class="form-select" id="estado" th:field="*{endereco.bairro.cidade.estado.sigla}">
+                <option value="">Selecione</option>
+                <option value="SP">SP</option>
+                <option value="RJ">RJ</option>
+                <option value="MG">MG</option>
+                <option value="BA">BA</option>
+                <option value="RS">RS</option>
+                <option value="PR">PR</option>
+                <option value="SC">SC</option>
+                <option value="PE">PE</option>
+                <option value="GO">GO</option>
+            </select>
+        </div>
+
+        <div class="col-12 text-center">
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </div>
     </form>
-</div>
-<div th:if="${errors}">
-    <ul>
-        <li th:each="error : ${errors}" th:text="${error.defaultMessage}" style="color: red;"></li>
-    </ul>
-</div>
-<div th:replace="~{fragments/footer.html :: footer}"></div>
 
+    <div th:if="${errors}" class="mt-3">
+        <ul class="text-danger">
+            <li th:each="error : ${errors}" th:text="${error.defaultMessage}"></li>
+        </ul>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer.html :: footer}"></div>
 </body>
 </html>

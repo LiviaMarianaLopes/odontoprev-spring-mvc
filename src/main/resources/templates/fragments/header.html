@@ -5,17 +5,15 @@
     <title>Title</title>
 </head>
 <body>
-    <div th:fragment="header">
-        <h1>Odontoprev</h1>
-        <h2>Gerencimento de pacientes e dentistas</h2>
-        <a th:href="@{/paciente/cadastro}">Cadastrar Paciente</a>
-        <span> | </span>
-        <a th:href="@{/paciente/lista}">Lista de Pacientes</a>
-        <span> | </span>
-        <a th:href="@{/dentista/cadastro}">Cadastrar Dentista</a>
-        <span> | </span>
-        <a th:href="@{/dentista/lista}">Lista de Dentistas</a>
-        <hr/>
-    </div>
+<div th:fragment="header" class="header">
+    <h1>Odontoprev</h1>
+    <h2>Gerencimento de pacientes e dentistas</h2>
+    <nav class="navbar">
+        <a class="nav-item nav-link" th:href="@{/paciente/cadastro}">Cadastrar Paciente</a>
+        <a class="nav-item nav-link" th:href="@{/paciente/lista}">Lista de Pacientes</a>
+        <a class="nav-item nav-link" th:href="@{/dentista/cadastro}">Cadastrar Dentista</a>
+        <a class="nav-item nav-link" th:href="@{/dentista/lista}">Lista de Dentistas</a>
+    </nav>
+</div>
 </body>
 </html>

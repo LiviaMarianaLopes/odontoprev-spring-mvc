@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" rel="stylesheet"/>
+    <script th:href="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}" defer></script>
+    <link th:href="@{/css/style.css}" rel="stylesheet"/>
 </head>
 <body>
-'   <div th:fragment="footer">
-        <hr/>
+<div th:fragment="footer" class="footer">
+    <hr/>
     <h2>Desenvolvedores</h2>
     <table>
         <thead>
