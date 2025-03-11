@@ -1,106 +1,133 @@
-# Odontoprev - API para gerencimento de pacientes e dentistas
+#  🦷 Odontoprev - API para Gerenciamento de Pacientes e Dentistas 
 
-## Equipe:
-- **Celeste Mayumi Pereira Tanaka** - RM552865: Responsável pela API em C# e desenvolvimento do modelo preditivo.
-- **Lívia Mariana Lopes** - RM552558: Responsável pela API em Java e DevOps.
-- **Luana Vieira Santos da Silva** - RM552994: Responsável pelo desenvolvimento do banco de dados e compliance e quality assurance do projeto.
-- **Todas**: Responsáveis pelo desenvolvimento mobile.
+## 1️⃣ Objetivo da Aplicação
+A API Odontoprev foi desenvolvida para otimizar o gerenciamento de pacientes e dentistas, permitindo o cadastro, edição, exclusão e listagem de ambos. O sistema visa fornecer uma solução eficiente e segura para a administração de profissionais e clientes na área odontológica.
 
 ---
 
-##  Instruções para rodar a aplicação
-1. **Pré-requisitos**:
-  - Certifique-se de ter o Java 21 instalado.
+## 2️⃣ Apresentação da Proposta Tecnológica
+🎥 [Assista à apresentação da aplicação](https://youtu.be/Uz4d2euEe4U)
 
-2. **Rodando o Projeto**:
-  - Clone o repositório:
-    ```shell
-    git clone https://github.com/LiviaMarianaLopes/odontoprev-spring-mvc.git
-    ```
-  - Navegue até o diretório do projeto:
-    ```shell
-    cd odontoprev-spring-mvc
-    ```
-  - Rode a aplicação diretamente pela IDE (IntelliJ ou Eclipse) 
-  - A API estará disponível em `http://localhost:8080`.
+---
 
-##  Apresentação da Proposta Tecnológica
-[Link para o vídeo de apresentação](https://youtu.be/Uz4d2euEe4U )
+## 3️⃣ Equipe
+- **Celeste Mayumi Pereira Tanaka (RM552865)** – Responsável pela API em C# e desenvolvimento do modelo preditivo.  
+- **Lívia Mariana Lopes (RM552558)** – Responsável pela API em Java e DevOps.  
+- **Luana Vieira Santos da Silva (RM552994)** – Responsável pelo desenvolvimento do banco de dados, compliance e quality assurance do projeto.  
+- **Todas** – Responsáveis pelo desenvolvimento mobile.  
 
-## Funcionalidades da API
+---
 
-- Gerencimento de Dentistas: Cadastro completo, edição, consulta e exclusão de dentistas.
-- Cadastro de Pacientes: Cadastro completo, edição, consulta e exclusão de pacientes.
+## 4️⃣ Arquitetura da Solução
+A aplicação foi desenvolvida utilizando Java Spring MVC, seguindo uma arquitetura em camadas para garantir modularidade e escalabilidade. A estrutura se divide em:
+- **Model** – Representação das entidades do sistema.  
+- **Repository** – Responsável pela comunicação com o banco de dados.  
+- **DTO (Data Transfer Object)** – Abstração para troca de dados.  
+- **Service** – Contém a lógica de negócios.  
+- **Controller** – Gerencia as requisições HTTP da API.  
 
-### EndPoints:
+---
 
-- GET /: Página inicial.
-  #### Dentistas
-- GET /dentista/lista: Consultar a lista de dentista cadastrados no banco de dados.
-- GET /destista/cadastro: Página com formulário para cadastro de dentista.
-- POST /dentista/cadastrar: Cadastro de dentista.
-- GET /dentista/edicao/{id}: Página com formulário para edição de dentista.
-- POST /dentista/{id}: Edição de dentista.
-- GET /dentista/{id}: Endpoint para exclusão de dentista.
-  #### Pacientes
-- GET /paciente/lista: Consultar a lista de pacientes cadastrados no banco de dados.
-- GET /paciente/cadastro: Página com formulário para cadastro de paciente.
-- POST /paciente/cadastrar: Cadastro de paciente.
-- GET /paciente/edicao/{id}: Página com formulário para edição de paciente.
-- POST /paciente/{id}: Edição de paciente.
-- GET /paciente/{id}: Endpoint para exclusão de paciente.
+## 5️⃣ Diagramas da Aplicação
+📌 **Diagrama de classes**  
+![Diagrama de classe](./images/diagrama-odontoprev-sprint3.png)
 
-## Desenvolvimento
-O desenvolvimento desta aplicação foi realizado utilizando Java Spring MVC, com uma arquitetura em camadas para garantir a separação de responsabilidades e facilitar a manutenção e escalabilidade do sistema. A aplicação foi dividida nas seguintes camadas principais:
+📌 **Modelagem do banco de dados**  
+![Modelo relacional](./images/RelationalModel.png)
 
-### Estrutura da Aplicação
-A aplicação segue o padrão Spring MVC, sendo organizada nas seguintes camadas:
+---
 
-- Model: Representa as entidades de dados do sistema, como Dentista, Paciente, Sinistro, entre outras. Essas classes são mapeadas para as tabelas do banco de dados e contêm os dados que são manipulados pela aplicação.
+## 6️⃣ Instruções para Rodar a Aplicação
+### ✅ Pré-requisitos  
+- Java 21 instalado.  
 
-- Repository: A camada de Repository é responsável pela interação direta com o banco de dados. Utilizamos o Spring Data JPA para criar repositórios que facilitam as operações CRUD (Create, Read, Update, Delete) de maneira eficiente e com mínima configuração.
+### ▶️ Rodando o Projeto
+```sh
+# Clone o repositório
+ git clone https://github.com/LiviaMarianaLopes/odontoprev-spring-mvc.git
 
-- DTO (Data Transfer Object): A camada DTO foi criada para abstrair a comunicação entre a API e as camadas externas, como o cliente ou outras aplicações. Os DTOs ajudam a desacoplar a estrutura interna das entidades do banco de dados da forma como os dados são apresentados para o usuário.
+# Navegue até o diretório do projeto
+ cd odontoprev-spring-mvc
 
-- Service: A camada de Service contém a lógica de negócio da aplicação. Ela orquestra a interação entre as entidades, os repositórios e os controladores, garantindo que as operações realizadas sejam válidas e que as regras de negócios sejam cumpridas.
+# Rode a aplicação diretamente pela IDE (IntelliJ ou Eclipse)
+```
 
-- Controller: A camada Controller é responsável por definir os endpoints da API e manipular as requisições HTTP. Através do Spring MVC, os controladores processam as solicitações e retornam as respostas adequadas, utilizando os serviços para executar as operações solicitadas.
-  
-##  Testes da API
-Abaixo estão os prints de alguns testes realizados na API:
+A API estará disponível em `http://localhost:8080`.  
 
-### Testes de Criação de Paciente (POST /paciente/cadastro)
+---
 
-#### Erro
-<img width="300" src="images/erro-criacao-paciente.png"/>
+## 7️⃣ Funcionalidades da API
+📌 **Gerenciamento de Dentistas**  
+- Cadastro, edição, consulta e exclusão de dentistas.  
 
-Teste mostrando um erro durante a tentativa de criar uma novo paciente, devido a dados inválidos.
+📌 **Cadastro de Pacientes**  
+- Cadastro, edição, consulta e exclusão de pacientes.  
 
-#### Sucesso
-<img width="300" src="images/criacao-paciente.png"/>
+---
 
-Teste mostrando a criação bem-sucedida de uma novo paciente no sistema.
+## 8️⃣ Endpoints da API
+### 📍 Página inicial
+- `GET /` – Página principal.  
 
-### Teste de Listagem de Pacientes (GET /paciente/lista)
+### 📍 Dentistas
+- `GET /dentista/lista` – Lista os dentistas cadastrados.  
+- `GET /dentista/cadastro` – Página de cadastro de dentista.  
+- `POST /dentista/cadastrar` – Cadastra um novo dentista.  
+- `GET /dentista/edicao/{id}` – Página de edição de dentista.  
+- `POST /dentista/{id}` – Edita um dentista.  
+- `GET /dentista/{id}` – Exclui um dentista.  
 
-#### Sucesso
-<img width="300" src="images/lista-paciente.png"/>
+### 📍 Pacientes
+- `GET /paciente/lista` – Lista os pacientes cadastrados.  
+- `GET /paciente/cadastro` – Página de cadastro de paciente.  
+- `POST /paciente/cadastrar` – Cadastra um novo paciente.  
+- `GET /paciente/edicao/{id}` – Página de edição de paciente.  
+- `POST /paciente/{id}` – Edita um paciente.  
+- `GET /paciente/{id}` – Exclui um paciente.  
 
-Teste mostrando a listagem de todas os pacientes cadastrados.
+---
 
-### Teste de Atualização de Paciente (GET /paciente/edicao/{id})
+## 9️⃣ Testes da API
+### 📍 Criação de Paciente (POST /paciente/cadastrar)
+❌ **Erro**  
+![Erro na criação de paciente](images/erro-criacao-paciente.png)  
+(Erro devido a dados inválidos).  
 
-#### Sucesso
-<img width="300" src="images/atualizacao-paciente.png"/>
+✅ **Sucesso**  
+![Cadastro de paciente bem-sucedido](images/criacao-paciente.png)  
+(Cadastro de paciente realizado com sucesso).  
 
-Teste mostrando a atualização bem-sucedida de um paciente existente.
+### 📍 Listagem de Pacientes (GET /paciente/lista)
+✅ **Sucesso**  
+![Lista de pacientes](images/lista-paciente.png)  
 
-### Testes de Consulta por ID (GET /consultas/{id})
+### 📍 Atualização de Paciente (POST /paciente/{id})
+✅ **Sucesso**  
+![Atualização de paciente](images/atualizacao-paciente.png)  
 
-### Teste de Exclusão de Paciente (GET /paciente/deletar/{id})
+### 📍 Exclusão de Paciente (GET /paciente/deletar/{id})
+✅ **Sucesso**  
+![Exclusão de paciente](images/exclusao-paciente.png)  
 
-#### Sucesso
-<img width="500" src="images/exclusao-paciente.png"/>
+---
 
+## 🔟 Dificuldades Encontradas e Próximos Passos
+### 📌 Dificuldades Encontradas
+Durante o desenvolvimento da aplicação, algumas dificuldades foram enfrentadas:
 
-Teste mostrando a exclusão bem-sucedida de um paciente existente no sistema.
+- **Relacionamentos no Banco de Dados**: Foi necessário implementar uma lógica para verificar se um endereço já existia antes de cadastrar um novo paciente. Caso o endereço já estivesse no banco, ele deveria ser reutilizado.
+- **Validação de E-mail**: A lógica de validação exigiu verificações tanto no cadastro quanto na edição. No cadastro, era necessário garantir que o e-mail não existisse previamente. Já na edição, o sistema precisava verificar se o e-mail já estava cadastrado e garantir que não fosse alterado para um já existente.
+ 
+
+### 📌 Próximos Passos
+- **Autenticação com Spring Security**, incluindo gestão de perfis de segurança.
+- **Implementação de internacionalização**, permitindo suporte a múltiplos idiomas.
+- **Configuração de mensageria**, incluindo produtores e consumidores.
+- **Monitoramento com Spring Boot Actuator**, para fornecer métricas e insights sobre a API.
+- **Integração de Inteligência Artificial com Spring AI**, trazendo recursos avançados para a aplicação.
+- **Avaliação da viabilidade da solução**, garantindo que ela atende às necessidades do cliente.
+
+---
+
+## 🚀 Conclusão
+Este projeto representa um avanço na digitalização do gerenciamento odontológico. A implementação de uma API robusta e segura é essencial para otimizar os processos e reduzir fraudes. 
