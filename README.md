@@ -1,16 +1,28 @@
 #  🦷 Odontoprev - API para Gerenciamento de Pacientes e Dentistas 
 
-## 1️⃣ Objetivo da Aplicação
+## 📌 Objetivo da Aplicação
 A API Odontoprev foi desenvolvida para otimizar o gerenciamento de pacientes e dentistas, permitindo o cadastro, edição, exclusão e listagem de ambos. O sistema visa fornecer uma solução eficiente e segura para a administração de profissionais e clientes na área odontológica.
 
 ---
 
-## 2️⃣ Apresentação da Proposta Tecnológica
-🎥 [Assista à apresentação da aplicação](https://youtu.be/Uz4d2euEe4U)
+## 🎥 Vídeos Apresentação
+
+**Proposta tecnológica**
+
+🎥 [Proposta tecnológica](https://youtu.be/Uz4d2euEe4U)
+
+**Vídeo demonstrando o deploy até a persistência de dados em Nuvem**
+
+🎥 [Devops-Sprint3](https://youtu.be/Uz4d2euEe4U)
+
+**Demonstração da aplicação funcionando**
+
+🎥 [Apresentação da aplicação](https://youtu.be/Uz4d2euEe4U)
 
 ---
 
-## 3️⃣ Equipe
+## 👥 Equipe
+
 - **Celeste Mayumi Pereira Tanaka (RM552865)** – Responsável pela API em C# e desenvolvimento do modelo preditivo.  
 - **Lívia Mariana Lopes (RM552558)** – Responsável pela API em Java e DevOps.  
 - **Luana Vieira Santos da Silva (RM552994)** – Responsável pelo desenvolvimento do banco de dados, compliance e quality assurance do projeto.  
@@ -18,7 +30,7 @@ A API Odontoprev foi desenvolvida para otimizar o gerenciamento de pacientes e d
 
 ---
 
-## 4️⃣ Arquitetura da Solução
+## 🏗️ Arquitetura da Solução
 A aplicação foi desenvolvida utilizando Java Spring MVC, seguindo uma arquitetura em camadas para garantir modularidade e escalabilidade. A estrutura se divide em:
 - **Model** – Representação das entidades do sistema.  
 - **Repository** – Responsável pela comunicação com o banco de dados.  
@@ -28,16 +40,119 @@ A aplicação foi desenvolvida utilizando Java Spring MVC, seguindo uma arquitet
 
 ---
 
-## 5️⃣ Diagramas da Aplicação
+## 📊 Diagramas da Aplicação
 📌 **Diagrama de classes**  
 ![Diagrama de classe](./images/diagrama-odontoprev-sprint3.png)
 
 📌 **Modelagem do banco de dados**  
 ![Modelo relacional](./images/RelationalModel.png)
 
+📌 **Desenho da arquitetura**
+![Desenho da arquitetura](./images/desenho-da-arquitetura.png)
+
 ---
 
-## 6️⃣ Instruções para Rodar a Aplicação
+
+
+## ☁️ Implantação em Nuvem com ACR/ACI 
+Esta seção descreve o processo de implantação da API Odontoprev na nuvem utilizando Azure Container Registry (ACR) e Azure Container Instances (ACI), além da configuração do banco de dados no SQL Azure.
+
+### ✅ Passo a passo para execução da aplicação em nuvem
+### 1️⃣ Clone o repositório
+
+```sh
+git clone https://github.com/LiviaMarianaLopes/odontoprev-spring-mvc.git
+
+cd odontoprev-spring-mvc
+
+```
+### 2️⃣ Criação do Banco de Dados no Azure
+No portal da Azure, crie um Azure SQL Database e execute o script DDL encontrado [aqui](./DDL.sql) no repositório para criar as tabelas necessárias.
+
+### 3️⃣ Configuração do Banco de Dados na Aplicação
+
+Edite o arquivo build.gradle para incluir o driver do SQL Server:
+
+```gradle
+implementation 'com.microsoft.sqlserver:mssql-jdbc:12.4.2.jre11'
+```
+No arquivo application.properties, comente as configurações existentes e adicione as linhas abaixo (substitua as credenciais pelas suas):
+```properties
+
+spring.datasource.url=jdbc:sqlserver://<SEU_HOST>:1433;database=<SEU_BANCO>;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+spring.datasource.username=<SEU_USUARIO>
+spring.datasource.password=<SUA_SENHA>
+spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+# Configurações do Hibernate
+spring.jpa.database-platform=org.hibernate.dialect.SQLServerDialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+```
+### 4️⃣ Deploy da Aplicação no Azure
+
+Login na Azure e Criação do Grupo de Recursos
+
+```sh
+az login
+```
+Depois, crie um Grupo de Recursos:
+
+```sh
+az group create --name rg-odontoprev --location eastus
+```
+Crie o Azure Container Registry (ACR):
+
+```sh
+
+az acr create --resource-group rg-odontoprev --name odontoprevjavarm552558 --sku Basic
+```
+Autentique-se no ACR:
+
+```sh
+
+az acr login --name odontoprevjavarm552558
+```
+Construa a imagem Docker:
+
+```sh
+docker build -t odontoprev-java .
+```
+Marque e envie a imagem para o ACR:
+
+```sh
+docker tag odontoprev-java odontoprevjavarm552558.azurecr.io/odontoprev-java:v1
+docker push odontoprevjavarm552558.azurecr.io/odontoprev-java:v1
+```
+Crie o Azure Container Instance (ACI) para rodar a aplicação na nuvem:
+
+```sh
+
+az container create --resource-group rg-odontoprev --name odontoprevjavarm552558 \
+  --image odontoprevjavarm552558.azurecr.io/odontoprev-java:v1 \
+  --cpu 1 --memory 1 \
+  --registry-login-server odontoprevjavarm552558.azurecr.io \
+  --registry-username odontoprevjavarm552558 \
+  --registry-password <SUA_SENHA> \
+  --ip-address Public --dns-name-label odontoprevjavarm552558 \
+  --ports 3000 80 8080 --os-type Linux
+```
+Após a implantação, obtenha o endereço IP da API rodando o comando:
+
+```sh
+az container show --resource-group rg-odontoprev --name odontoprevjavarm552558 --query ipAddress.ip --output tsv
+```
+A aplicação estará disponível em:
+
+```cpp
+http://<endereço-ip>:8080
+```
+### 5️⃣ Vídeo demonstrando o deploy até a persistência de dados em Nuvem 
+🎥 [Devops-Sprint3](https://youtu.be/Uz4d2euEe4U)
+
+
+## 📝 Instruções para Rodar a Aplicação
 ### ✅ Pré-requisitos  
 - Java 21 instalado.  
 
@@ -54,9 +169,12 @@ A aplicação foi desenvolvida utilizando Java Spring MVC, seguindo uma arquitet
 
 A API estará disponível em `http://localhost:8080`.  
 
+### 🎞️ Demonstração da aplicação funcionando
+🎥 [Apresentação da aplicação](https://youtu.be/Uz4d2euEe4U)
+
 ---
 
-## 7️⃣ Funcionalidades da API
+## ⚒️ Funcionalidades da API
 📌 **Gerenciamento de Dentistas**  
 - Cadastro, edição, consulta e exclusão de dentistas.  
 
@@ -65,7 +183,7 @@ A API estará disponível em `http://localhost:8080`.
 
 ---
 
-## 8️⃣ Endpoints da API
+## 📜 Endpoints da API
 ### 📍 Página inicial
 - `GET /` – Página principal.  
 
@@ -87,7 +205,7 @@ A API estará disponível em `http://localhost:8080`.
 
 ---
 
-## 9️⃣ Testes da API
+## 🔍 Testes da API
 ### 📍 Criação de Paciente (POST /paciente/cadastrar)
 ❌ **Erro**  
 ![Erro na criação de paciente](images/erro-criacao-paciente.png)  
@@ -111,7 +229,7 @@ A API estará disponível em `http://localhost:8080`.
 
 ---
 
-## 🔟 Dificuldades Encontradas e Próximos Passos
+## 💡 Dificuldades Encontradas e Próximos Passos
 ### 📌 Dificuldades Encontradas
 Durante o desenvolvimento da aplicação, algumas dificuldades foram enfrentadas:
 
