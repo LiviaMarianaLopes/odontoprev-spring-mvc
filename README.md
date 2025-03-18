@@ -13,11 +13,11 @@ A API Odontoprev foi desenvolvida para otimizar o gerenciamento de pacientes e d
 
 **Vídeo demonstrando o deploy até a persistência de dados em Nuvem**
 
-🎥 [Devops-Sprint3](https://youtu.be/Uz4d2euEe4U)
+🎥 [Devops-Sprint3](https://1drv.ms/v/c/8a27b74030980b8f/EYeBoibBZ6xGkLFpqyEWdugB4v4bgQHSJSTicClbo5g8Cg?e=OYvYL9)
 
 **Demonstração da aplicação funcionando**
 
-🎥 [Apresentação da aplicação](https://youtu.be/Uz4d2euEe4U)
+🎥 [Apresentação da aplicação](https://1drv.ms/v/c/8a27b74030980b8f/EdPl0kvMCbhEsMklU9GtYWIBhXh2YjdTKKYcVo1ROFIP7Q?e=zuyXKh)
 
 ---
 
@@ -48,6 +48,7 @@ A aplicação foi desenvolvida utilizando Java Spring MVC, seguindo uma arquitet
 ![Modelo relacional](./images/RelationalModel.png)
 
 📌 **Desenho da arquitetura**
+<br/>
 ![Desenho da arquitetura](./images/desenho-da-arquitetura.png)
 
 ---
@@ -67,7 +68,7 @@ cd odontoprev-spring-mvc
 
 ```
 ### 2️⃣ Criação do Banco de Dados no Azure
-No portal da Azure, crie um Azure SQL Database e execute o script DDL encontrado [aqui](./DDL.sql) no repositório para criar as tabelas necessárias.
+No portal da Azure, crie um Azure SQL Database e execute o script DDL encontrado [aqui](./DDL-odontoprev-azure.sql) no repositório para criar as tabelas necessárias.
 
 ### 3️⃣ Configuração do Banco de Dados na Aplicação
 
@@ -149,7 +150,7 @@ A aplicação estará disponível em:
 http://<endereço-ip>:8080
 ```
 ### 5️⃣ Vídeo demonstrando o deploy até a persistência de dados em Nuvem 
-🎥 [Devops-Sprint3](https://youtu.be/Uz4d2euEe4U)
+🎥 [Devops-Sprint3](https://1drv.ms/v/c/8a27b74030980b8f/EYeBoibBZ6xGkLFpqyEWdugB4v4bgQHSJSTicClbo5g8Cg?e=OYvYL9)
 
 
 ## 📝 Instruções para Rodar a Aplicação
@@ -170,7 +171,7 @@ http://<endereço-ip>:8080
 A API estará disponível em `http://localhost:8080`.  
 
 ### 🎞️ Demonstração da aplicação funcionando
-🎥 [Apresentação da aplicação](https://youtu.be/Uz4d2euEe4U)
+🎥 [Apresentação da aplicação](https://1drv.ms/v/c/8a27b74030980b8f/EdPl0kvMCbhEsMklU9GtYWIBhXh2YjdTKKYcVo1ROFIP7Q?e=zuyXKh)
 
 ---
 
