@@ -13,11 +13,11 @@ A API Odontoprev foi desenvolvida para otimizar o gerenciamento de pacientes e d
 
 **Vídeo demonstrando o deploy até a persistência de dados em Nuvem**
 
-🎥 [Devops-Sprint3](https://1drv.ms/v/c/8a27b74030980b8f/EYeBoibBZ6xGkLFpqyEWdugB4v4bgQHSJSTicClbo5g8Cg?e=OYvYL9)
+🎥 [Devops-Sprint3](https://drive.google.com/file/d/1JfNAa8KS-WlFcJWAlrMYthpFkkjiAdN6/view?usp=sharing)
 
 **Demonstração da aplicação funcionando**
 
-🎥 [Apresentação da aplicação](https://1drv.ms/v/c/8a27b74030980b8f/EdPl0kvMCbhEsMklU9GtYWIBhXh2YjdTKKYcVo1ROFIP7Q?e=zuyXKh)
+🎥 [Apresentação da aplicação](https://drive.google.com/file/d/1ewhZ3PRZ0rRPqFZPtuAMJOAYHYkfgWup/view?usp=sharing)
 
 ---
 
