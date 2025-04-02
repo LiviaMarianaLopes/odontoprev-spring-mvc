@@ -4,6 +4,7 @@ WORKDIR /usr/app
 
 COPY . .
 
+RUN chmod +x gradlew
 RUN ./gradlew build -x test
 
 RUN useradd -ms /bin/bash appuser
