@@ -5,6 +5,7 @@ import br.com.fiap.odontoprevjavamvc.model.*;
 import br.com.fiap.odontoprevjavamvc.repository.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -107,9 +108,14 @@ public class DentistaService {
     }
 
     private Dentista requestToDentista(DentistaRequest dentistaRequest) {
-        Login login = loginRepository.findByEmail(dentistaRequest.getEmail())
-                .orElseGet(() -> loginRepository.save(new Login(dentistaRequest.getLogin().getEmail(), dentistaRequest.getLogin().getSenha())));
+        UserDetails userDetails = loginRepository.findByEmail(dentistaRequest.getEmail());
+        Login login = null;
 
+        if (userDetails == null) {
+            login = loginRepository.save(new Login(dentistaRequest.getLogin().getEmail(), dentistaRequest.getLogin().getSenha()));
+        } else {
+            login = (Login) userDetails;
+        }
         String siglaEstado = dentistaRequest.getEndereco().getBairro().getCidade().getEstado().getSigla();
         String nomeEstado = SIGLAS_ESTADOS.getOrDefault(siglaEstado, "Estado Desconhecido");
 
@@ -219,9 +225,7 @@ public class DentistaService {
         return request;
     }
     public Boolean isEmailCadastrado(String email) {
-        Optional<Login> loginExistente = loginRepository.findByEmail(email);
-
-        if (loginExistente.isPresent()) {
+        if (loginRepository.findByEmail(email) != null) {
             return true;
         }
         return false;
