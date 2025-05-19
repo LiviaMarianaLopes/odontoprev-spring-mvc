@@ -4,7 +4,11 @@ import br.com.fiap.odontoprevjavamvc.dto.LoginRequest;
 import br.com.fiap.odontoprevjavamvc.dto.LoginResponse;
 import br.com.fiap.odontoprevjavamvc.dto.PacienteRequest;
 import br.com.fiap.odontoprevjavamvc.model.Login;
+import br.com.fiap.odontoprevjavamvc.model.Unidade;
 import br.com.fiap.odontoprevjavamvc.repository.LoginRepository;
+import br.com.fiap.odontoprevjavamvc.model.Dentista;
+import br.com.fiap.odontoprevjavamvc.repository.DentistaRepository;
+import br.com.fiap.odontoprevjavamvc.repository.UnidadeRepository;
 import br.com.fiap.odontoprevjavamvc.security.TokenService;
 import br.com.fiap.odontoprevjavamvc.service.PacienteService;
 import jakarta.validation.Valid;
@@ -16,10 +20,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -33,6 +36,22 @@ public class APIController {
     private LoginRepository loginRepository;
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    UnidadeRepository unidadeRepository;
+    @Autowired
+    DentistaRepository dentistaRepository;
+
+    @GetMapping("dentistas")
+    public ResponseEntity<List<Dentista>> readDentistas(){
+        List<Dentista> listaDentistas = dentistaRepository.findAll();
+        return new ResponseEntity<>(listaDentistas, HttpStatus.OK);
+    }
+
+    @GetMapping("/unidades")
+    public ResponseEntity<List<Unidade>> readUnidades(){
+        List<Unidade> listaUnidades = unidadeRepository.findAll();
+        return new ResponseEntity<>(listaUnidades, HttpStatus.OK);
+    }
 
     @PostMapping("/pacientes")
     public ResponseEntity<?> cadastrarPaciente(@RequestBody @Valid PacienteRequest pacienteRequest, BindingResult result) {
