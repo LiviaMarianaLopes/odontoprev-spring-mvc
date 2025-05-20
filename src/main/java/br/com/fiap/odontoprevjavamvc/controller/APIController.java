@@ -4,10 +4,12 @@ import br.com.fiap.odontoprevjavamvc.dto.LoginRequest;
 import br.com.fiap.odontoprevjavamvc.dto.LoginResponse;
 import br.com.fiap.odontoprevjavamvc.dto.PacienteRequest;
 import br.com.fiap.odontoprevjavamvc.model.Login;
+import br.com.fiap.odontoprevjavamvc.model.Paciente;
 import br.com.fiap.odontoprevjavamvc.model.Unidade;
 import br.com.fiap.odontoprevjavamvc.repository.LoginRepository;
 import br.com.fiap.odontoprevjavamvc.model.Dentista;
 import br.com.fiap.odontoprevjavamvc.repository.DentistaRepository;
+import br.com.fiap.odontoprevjavamvc.repository.PacienteRepository;
 import br.com.fiap.odontoprevjavamvc.repository.UnidadeRepository;
 import br.com.fiap.odontoprevjavamvc.security.TokenService;
 import br.com.fiap.odontoprevjavamvc.service.PacienteService;
@@ -23,6 +25,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -40,6 +43,8 @@ public class APIController {
     UnidadeRepository unidadeRepository;
     @Autowired
     DentistaRepository dentistaRepository;
+    @Autowired
+    PacienteRepository pacienteRepository;
 
     @GetMapping("dentistas")
     public ResponseEntity<List<Dentista>> readDentistas(){
@@ -68,19 +73,40 @@ public class APIController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Paciente cadastrado com sucesso");
     }
 
-    @PostMapping("/login")
+    @PostMapping("/auth")
     public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest) {
         try {
             var usuarioSenha = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getSenha());
             var auth = this.authenticationManager.authenticate(usuarioSenha);
+            var token = tokenService.generateToken((Login) auth.getPrincipal());
+            return ResponseEntity.ok(new LoginResponse(token));
+        } catch (BadCredentialsException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Credenciais inválidas");
+        }
+    }
 
-            if (auth == null) {
-                return ResponseEntity.badRequest().body("Credenciais inválidas");
-            }
+    @PostMapping("/login")
+    public ResponseEntity<?> logar(@RequestBody @Valid LoginRequest loginRequest) {
+        Optional<Paciente> usuario = pacienteRepository.findByEmail(loginRequest.getEmail());
 
-            return ResponseEntity.ok("Autenticado com sucesso");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erro na autenticação");
+        if (usuario.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Usuário não encontrado");
+        }
+
+        Paciente paciente = usuario.get();
+        System.out.println("Senha do banco: " + paciente.getLogin().getPassword());
+        System.out.println("Senha enviada: " + loginRequest.getSenha());
+
+        if (paciente.getLogin().getPassword().equals(loginRequest.getSenha())) {
+            return ResponseEntity.ok(paciente.getId());
+        } else {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Login ou senha incorretos");
         }
     }
 
