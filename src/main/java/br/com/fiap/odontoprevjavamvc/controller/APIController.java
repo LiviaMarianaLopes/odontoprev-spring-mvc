@@ -1,17 +1,13 @@
 package br.com.fiap.odontoprevjavamvc.controller;
 
+import br.com.fiap.odontoprevjavamvc.dto.ConsultaRequest;
 import br.com.fiap.odontoprevjavamvc.dto.LoginRequest;
 import br.com.fiap.odontoprevjavamvc.dto.LoginResponse;
 import br.com.fiap.odontoprevjavamvc.dto.PacienteRequest;
-import br.com.fiap.odontoprevjavamvc.model.Login;
-import br.com.fiap.odontoprevjavamvc.model.Paciente;
-import br.com.fiap.odontoprevjavamvc.model.Unidade;
-import br.com.fiap.odontoprevjavamvc.repository.LoginRepository;
-import br.com.fiap.odontoprevjavamvc.model.Dentista;
-import br.com.fiap.odontoprevjavamvc.repository.DentistaRepository;
-import br.com.fiap.odontoprevjavamvc.repository.PacienteRepository;
-import br.com.fiap.odontoprevjavamvc.repository.UnidadeRepository;
+import br.com.fiap.odontoprevjavamvc.model.*;
+import br.com.fiap.odontoprevjavamvc.repository.*;
 import br.com.fiap.odontoprevjavamvc.security.TokenService;
+import br.com.fiap.odontoprevjavamvc.service.ConsultaMapper;
 import br.com.fiap.odontoprevjavamvc.service.PacienteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +41,10 @@ public class APIController {
     DentistaRepository dentistaRepository;
     @Autowired
     PacienteRepository pacienteRepository;
+    @Autowired
+    ConsultaRepository consultaRepository;
+    @Autowired
+    ConsultaMapper consultaMapper;
 
     @GetMapping("dentistas")
     public ResponseEntity<List<Dentista>> readDentistas(){
@@ -70,7 +70,8 @@ public class APIController {
         }
 
         pacienteService.cadastrarPaciente(pacienteRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Paciente cadastrado com sucesso");
+        Optional<Paciente> pacienteSalvo = pacienteRepository.findByEmail(pacienteRequest.getEmail());
+        return ResponseEntity.status(HttpStatus.CREATED).body(pacienteSalvo.get());
     }
 
     @PostMapping("/auth")
@@ -110,7 +111,25 @@ public class APIController {
         }
     }
 
+    @GetMapping("/consulta/{id}")
+    public ResponseEntity<List<Consulta>> getConsultasPorPaciente(@PathVariable("id") Long pacienteId) {
+        List<Consulta> consultas = consultaRepository.findByPacienteId(pacienteId);
+        if (consultas.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(consultas);
+    }
 
+    @PostMapping("/consultas")
+    public ResponseEntity<Consulta> createConsulta(@Valid @RequestBody ConsultaRequest consultaRequest) {
+        Consulta consultaConvertida = consultaMapper.requestToConsulta(consultaRequest);
+        Consulta consulta = consultaRepository.save(consultaConvertida);
+        if (consulta.getId() != null) {
+            return new ResponseEntity<>(consulta, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }
 
