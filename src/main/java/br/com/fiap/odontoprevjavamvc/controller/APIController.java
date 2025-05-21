@@ -9,6 +9,11 @@ import br.com.fiap.odontoprevjavamvc.repository.*;
 import br.com.fiap.odontoprevjavamvc.security.TokenService;
 import br.com.fiap.odontoprevjavamvc.service.ConsultaMapper;
 import br.com.fiap.odontoprevjavamvc.service.PacienteService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -129,6 +134,29 @@ public class APIController {
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PutMapping("/consultas/{id}")
+    public ResponseEntity<Consulta> update(@PathVariable Long id, @Valid @RequestBody ConsultaRequest consultaRequest) {
+        Optional<Consulta> consultaSalva = consultaRepository.findById(id);
+        if (consultaSalva.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Consulta consulta = consultaMapper.requestToConsulta(consultaRequest);
+        consulta.setId(id);
+        Consulta consultaAtualizada = consultaRepository.save(consulta);
+        return new ResponseEntity<>(consultaAtualizada, HttpStatus.OK);
+    }
+
+
+    @DeleteMapping("/consultas/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        Optional<Consulta> consultaSalva = consultaRepository.findById(id);
+        if (consultaSalva.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        consultaRepository.delete(consultaSalva.get());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
