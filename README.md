@@ -126,7 +126,7 @@ Marque e envie a imagem para o ACR:
 docker tag odontoprev-java odontoprevjavarm552558.azurecr.io/odontoprev-java:v1
 docker push odontoprevjavarm552558.azurecr.io/odontoprev-java:v1
 ```
-Crie o Azure Container Instance (ACI) para rodar a aplicação na nuvem:
+Crie o Azure Container Instance (ACI) para rodar a aplicação na nuvem (Adicionar as variáveis de ambiente disponibilizadas no PDF):
 
 ```sh
 
@@ -137,7 +137,12 @@ az container create --resource-group rg-odontoprev --name odontoprevjavarm552558
   --registry-username odontoprevjavarm552558 \
   --registry-password <SUA_SENHA> \
   --ip-address Public --dns-name-label odontoprevjavarm552558 \
-  --ports 3000 80 8080 --os-type Linux
+  --ports 3000 80 8080 --os-type Linux \
+  --environment-variables \
+    GITHUB_CLIENT_ID="" \
+    GITHUB_CLIENT_SECRET="" \
+    GOOGLE_CLIENT_ID="" \
+    GOOGLE_CLIENT_SECRET=""
 ```
 Após a implantação, obtenha o endereço IP da API rodando o comando:
 
